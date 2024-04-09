@@ -1,9 +1,10 @@
-const categoryRepo = require('../../repositories/category/categoryRepository');
+const categoryRepo = require('../../repositories/categories/categoryRepository');
+const { isEmpty } = require('../../utils/globalUtility')
 
 const createCategory = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
-
+            // check whether the category already exist or not before creating a new one.
             let category = await categoryRepo.findByName({name: req.body.name});
 
             if (!isEmpty(category)) {
@@ -14,6 +15,7 @@ const createCategory = async (req) => {
                 });
             }
 
+            // create the requested category.
             let createdCategory = await categoryRepo.create({ name: req.body.name, description: req.body.description });
 
             if (createdCategory._id) {
@@ -38,6 +40,7 @@ const createCategory = async (req) => {
 const updateCategory = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // check the category availability before updating it.
             let category = await categoryRepo.findById(req.params.categoryId);
 
             if (isEmpty(category)) {
@@ -48,6 +51,7 @@ const updateCategory = async (req) => {
                 });
             }
             
+            // update the category details.
             let updatedCategory = await categoryRepo.update(req.params.categoryId, {name: req.body.name, description: req.body.description});
 
             if (updatedCategory._id) {
@@ -66,6 +70,7 @@ const updateCategory = async (req) => {
 const activateCategory = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // check the category availability before updating it.
             let category = await categoryRepo.findById(req.params.categoryId);
 
             if (isEmpty(category)) {
@@ -75,7 +80,7 @@ const activateCategory = async (req) => {
                     data: null
                 });
             }
-            
+            // activate the category.
             let updatedCategory = await categoryRepo.activate(req.params.categoryId);
 
             if (updatedCategory._id) {
@@ -94,6 +99,7 @@ const activateCategory = async (req) => {
 const deActivateCategory = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // check the category availability before updating it.
             let category = await categoryRepo.findById(req.params.categoryId);
 
             if (isEmpty(category)) {
@@ -103,7 +109,7 @@ const deActivateCategory = async (req) => {
                     data: null
                 });
             }
-            
+            // deactivate the category.
             let updatedCategory = await categoryRepo.deactivate(req.params.categoryId);
 
             if (updatedCategory._id) {
@@ -122,7 +128,7 @@ const deActivateCategory = async (req) => {
 const getAllCategories = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
-            
+            // get all active categories only.
             let categories = await categoryRepo.findAll();
             if (isEmpty(categories)) {
                 reject({
@@ -141,10 +147,6 @@ const getAllCategories = async (req) => {
             })
         }
     })
-}
-
-function isEmpty(value) {
-    return value && Object.keys(value).length === 0;
 }
 
 module.exports = { createCategory, updateCategory, activateCategory, deActivateCategory, getAllCategories };

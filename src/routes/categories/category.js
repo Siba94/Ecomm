@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const { ReqValidate } = require('../../middlewares/requestValidation');
-const { AuthenticateToken } = require('../../middlewares/authenticateJwt');
-const { createCategory, updateCategory, activateCategory, deActivateCategory, getAllCategories } = require('../../controllers/category/categoryController');
+const { reqValidate } = require('../../middlewares/requestValidation');
+const { authenticateToken } = require('../../middlewares/authenticateJwt');
+const { createCategory, updateCategory, activateCategory, deActivateCategory, getAllCategories } = require('../../controllers/categories/categoryController');
 
 router.post('/category', 
     [
@@ -15,8 +15,8 @@ router.post('/category',
         
         body('description'),
     ],
-    AuthenticateToken,
-    ReqValidate,
+    authenticateToken,
+    reqValidate,
     createCategory
 );
 
@@ -30,28 +30,28 @@ router.patch('/category/:categoryId',
         
         body('description'),
     ],
-    AuthenticateToken,
-    ReqValidate,
+    authenticateToken,
+    reqValidate,
     updateCategory
 )
 
 router.patch('/category/:categoryId/activate', 
     [],
-    AuthenticateToken,
-    ReqValidate,
+    authenticateToken,
+    reqValidate,
     activateCategory
 )
 
 router.patch('/category/:categoryId/de-activate', 
     [],
-    AuthenticateToken,
-    ReqValidate,
+    authenticateToken,
+    reqValidate,
     deActivateCategory
 )
 
 router.get('/category', 
     [],
-    ReqValidate,
+    reqValidate,
     getAllCategories
 )
 

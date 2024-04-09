@@ -1,7 +1,8 @@
-const orderService = require('../../services/order/order');
+const orderService = require('../../services/orders/orderService');
 
 const createOrder = async (req, res) => {
     try {
+        // create the requested order.
         let order = await orderService.createOrder(req);
         res.status(201).json({
             success: true,
@@ -10,7 +11,7 @@ const createOrder = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -20,7 +21,8 @@ const createOrder = async (req, res) => {
 
 const getOrderDetails = async (req, res) => {
     try {
-        let order = await orderService.orderDetails(req);
+        // get a specific order details based on order id.
+        let order = await orderService.getOrderDetails(req);
         res.status(200).json({
             success: true,
             message: "order fetched successfully",
@@ -28,7 +30,7 @@ const getOrderDetails = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -38,6 +40,7 @@ const getOrderDetails = async (req, res) => {
 
 const getOrdersByDate = async (req, res) => {
     try {
+        // get orders filter by date.
         let order = await orderService.getOrdersByDate(req);
         res.status(200).json({
             success: true,
@@ -46,7 +49,7 @@ const getOrdersByDate = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null

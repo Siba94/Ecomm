@@ -1,7 +1,8 @@
-const cartService = require('../../services/cart/cart');
+const cartService = require('../../services/carts/cartService');
 
 const addToCart = async (req, res) => {
     try {
+        // make a call to add items to cart.
         let cart = await cartService.addToCart(req);
         res.status(201).json({
             success: true,
@@ -10,7 +11,7 @@ const addToCart = async (req, res) => {
         })
     } catch(error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -20,6 +21,7 @@ const addToCart = async (req, res) => {
 
 const viewCart = async (req, res) => {
     try {
+        // get the cart details as requested by the user.
         let cart = await cartService.viewCart(req);
         res.status(200).json({
             success: true,
@@ -28,7 +30,7 @@ const viewCart = async (req, res) => {
         })
     } catch(error) {
         console.log(error);
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null

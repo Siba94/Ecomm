@@ -1,37 +1,40 @@
 const { User } = require('../../models/user');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const userLogin = async (req, res) => {
-
-    let user = await User.findOne({ email: req.body.email });
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            message: "user not available with the requested email address.",
-            data: null
-        })
-    } else {
-        let isValidPassword = bcrypt.compareSync(req.body.password, user.password)
-
-        if (!isValidPassword) {
-            return res.status(401).json({
+const userLogin = async (req) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            // get the user details from db.
+            let user = await User.findOne({ email: req.body.email });
+            // reject if user not found.
+            if (!user) {
+                reject({
+                    success: false,
+                    message: "user not available with the requested email address.",
+                    data: null
+                })
+            } else {
+                // validate the password.
+                let isValidPassword = bcrypt.compareSync(req.body.password, user.password)
+                if (!isValidPassword) {
+                    reject({
+                        success: false,
+                        message: 'Invalid password. Please retry!!',
+                        data: null
+                    })
+                }
+                // resolve successfully if all well.
+                return resolve(user);
+            }
+        } catch (error) {
+            console.log(error)
+            reject({
                 success: false,
-                message: 'Invalid password',
+                message: error.message,
                 data: null
-            });
+            })
         }
-
-        return res.status(200).json({
-            success: true,
-            message: "successfully loggedIn",
-            data: generateJwtToken({username: user.name, email:user.email, id: user._id})
-        })
-    }
+    })
 }
 
-function generateJwtToken (username) {
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '24h'})
-}
-
-module.exports.UserLogin = userLogin;
+module.exports = { userLogin }

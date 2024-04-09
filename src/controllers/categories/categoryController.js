@@ -1,7 +1,8 @@
-const categoryService = require('../../services/category/category');
+const categoryService = require('../../services/categories/categoryService');
 
 const createCategory = async (req, res) => {
     try {
+        // create the requsted category.
         let createdCategory = await categoryService.createCategory(req);
         res.status(201).json({
             success: true,
@@ -9,7 +10,7 @@ const createCategory = async (req, res) => {
             data: createdCategory
         });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -19,6 +20,7 @@ const createCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
     try {
+        // update the requested category.
         let updatedCategory = await categoryService.updateCategory(req);
         res.status(200).json({
             success: true,
@@ -26,7 +28,7 @@ const updateCategory = async (req, res) => {
             data: updatedCategory
         });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -36,6 +38,7 @@ const updateCategory = async (req, res) => {
 
 const activateCategory = async (req, res) => {
     try {
+        // activate the requested category.
         let updatedCategory = await categoryService.activateCategory(req);
         res.status(200).json({
             success: true,
@@ -43,7 +46,7 @@ const activateCategory = async (req, res) => {
             data: updatedCategory
         });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -53,6 +56,7 @@ const activateCategory = async (req, res) => {
 
 const deActivateCategory = async (req, res) => {
     try {
+        // deactivate the requested category.
         let updatedCategory = await categoryService.deActivateCategory(req);
         res.status(200).json({
             success: true,
@@ -60,7 +64,7 @@ const deActivateCategory = async (req, res) => {
             data: updatedCategory
         });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null
@@ -70,6 +74,7 @@ const deActivateCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
     try {
+        // get all active categories only.
         let categories = await categoryService.getAllCategories(req);
         res.status(200).json({
             success: true,
@@ -77,7 +82,7 @@ const getAllCategories = async (req, res) => {
             data: categories
         });
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
             data: null

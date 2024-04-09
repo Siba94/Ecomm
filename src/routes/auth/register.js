@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const { ReqValidate } = require('../../middlewares/requestValidation.js')
-const { RegisterController } = require('../../controllers/auth/userRegistrationController.js');
+const { reqValidate } = require('../../middlewares/requestValidation.js')
+const { registerUser } = require('../../controllers/auth/userRegistrationController.js');
 
 router.post('/register', 
     [
@@ -29,8 +29,8 @@ router.post('/register',
             .withMessage('password must be at least 8 chars long.'),
 
     ],
-    ReqValidate,
-    RegisterController
+    reqValidate,
+    registerUser
 )
 
 module.exports = router

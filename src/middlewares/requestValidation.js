@@ -13,4 +13,4 @@ const reqValidate = (req, res, next) => {
     }
 }
 
-module.exports.ReqValidate = reqValidate;
+module.exports.reqValidate = reqValidate;

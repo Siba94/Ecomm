@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const { ReqValidate } = require('../../middlewares/requestValidation.js')
-const { LoginController } = require('../../controllers/auth/userLoginContoller.js');
+const { reqValidate } = require('../../middlewares/requestValidation.js')
+const { login } = require('../../controllers/auth/userLoginContoller.js');
 
 router.post('/login', 
     [
@@ -19,8 +19,8 @@ router.post('/login',
             .isString(),
 
     ],
-    ReqValidate,
-    LoginController
+    reqValidate,
+    login
 )
 
 module.exports = router

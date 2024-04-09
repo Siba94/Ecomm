@@ -1,0 +1,1 @@
+JWT_EXPIRE_TIME='24h'

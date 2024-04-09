@@ -1,18 +1,19 @@
-const productRepo = require('../../repositories/product/productRepository');
-const categoryRepo = require('../../repositories/category/categoryRepository');
+const productRepo = require('../../repositories/products/productRepository');
+const categoryRepo = require('../../repositories/categories/categoryRepository');
+const { isEmpty } = require('../../utils/globalUtility');
 
 const createProduct = async(req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // check the category details before creating product.
             let category = await categoryRepo.findById(req.params.categoryId);
-            console.log(category);
             if (isEmpty(category)) {
                 reject({
                     success: false,
                     message: 'The provided category is not available to create product.'
                 })
             }
-
+            // create the product.
             let createdProduct = await productRepo.create({
                 name: req.body.name,
                 description: req.body.description,
@@ -42,6 +43,7 @@ const createProduct = async(req) => {
 const listAllProducts = async() => {
     return new Promise (async (resolve, reject) => {
         try {
+            // list all products irrespective of categories.
             let products = await productRepo.findAll();
 
             if (isEmpty(products)) {
@@ -65,6 +67,7 @@ const listAllProducts = async() => {
 const productDetails = async(req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // get product details based on prodcut id.
             let product = await productRepo.findOneBy(req.params.productId);
 
             if (isEmpty(product)) {
@@ -88,6 +91,7 @@ const productDetails = async(req) => {
 const productBasedOnCategory = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
+            // get product list based on category.
             let products = await productRepo.findAllByCategory(req.params.categoryId);
 
             if (isEmpty(products)) {
@@ -106,10 +110,6 @@ const productBasedOnCategory = async (req) => {
             })
         }
     })
-}
-
-function isEmpty(value) {
-    return value && Object.keys(value).length === 0;
 }
 
 module.exports = { createProduct, listAllProducts, productDetails, productBasedOnCategory}

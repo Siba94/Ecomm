@@ -1,56 +1,47 @@
 const bcrypt  = require('bcrypt');
-const { User } = require('../../models/user');
-const jwt = require('jsonwebtoken');
+const userRepo = require('../../repositories/users/userRepository');
 
-const userRegister = async (req, res) => {
-
-    let user = await User.findOne({ email: req.body.email });
-    if (user) {
-        return res.status(400).json({
-            success: false,
-            message: "user already exist. please sign in.",
-            data: null
-        })
-    } else {
+const userRegister = async (req) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            bcrypt.hash(req.body.password, 10, async (err, hash) => {
-
-                if (err) {
-                    console.log("error", err);
-                    return res.status(400).json({
-                        success: false,
-                        message: err,
-                        data: null
-                    
+            // check if the user email already exist.
+            // if found reject for creating user.
+            let user = await userRepo.findByEmail(req.body.email)
+            if (user) {
+                reject({
+                    success: false,
+                    message: "user already exist. please sign in.",
+                    data: null
+                })
+            } else {
+                // hash the password and create new user based on given details.
+                bcrypt.hash(req.body.password, 10, async (error, hash) => {
+                    if (error) {
+                        reject({
+                            success: false,
+                            message: err,
+                            data: null
+                        })
+                    }
+                
+                    // create a new user
+                    user = userRepo.createNewUser({
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: hash
                     })
-                }
-            
-                const user = new User({
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: hash
+                    return resolve(user);
                 })
-
-                await user.save()
-                return res.status(201).json({
-                    success: true,
-                    message: "User created",
-                    data: generateJwtToken({username: user.name, email: user.email, id: user._id})
-                })
-            })
-        } catch (err) {
-            console.log(err);
-            return res.status(400).json({
+            }
+        } catch ( error) {
+            console.log(error);
+            reject({
                 success: false,
-                message: err.message,
+                message: error.message,
                 data: null
             })
         }
-    }
+    })
 }
 
-function generateJwtToken (username) {
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '86400'})
-}
-
-module.exports.UserRegister = userRegister;
+module.exports = { userRegister };

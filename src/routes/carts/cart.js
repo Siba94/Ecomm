@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const { ReqValidate } = require ('../../middlewares/requestValidation');
-const { AuthenticateToken } = require('../../middlewares/authenticateJwt');
-const { addToCart, viewCart } = require('../../controllers/cart/cartController');
+const { reqValidate } = require ('../../middlewares/requestValidation');
+const { authenticateToken } = require('../../middlewares/authenticateJwt');
+const { addToCart, viewCart } = require('../../controllers/carts/cartController');
 
 router.post('/cart', 
     [
@@ -15,11 +15,11 @@ router.post('/cart',
         .notEmpty()
         .withMessage('quantity can not be empty')
     ],
-    AuthenticateToken,
-    ReqValidate,
+    authenticateToken,
+    reqValidate,
     addToCart
 )
 
-router.get('/cart', [], AuthenticateToken, ReqValidate, viewCart)
+router.get('/cart', [], authenticateToken, reqValidate, viewCart)
 
 module.exports = router
