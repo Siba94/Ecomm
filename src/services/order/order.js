@@ -47,7 +47,7 @@ const createOrder = async (req) => {
     })
 }
 
-const orderDetails = async (req) => {
+const getOrderDetails = async (req) => {
     return new Promise (async (resolve, reject) => {
         try {
             if (!req.user) {
@@ -70,4 +70,27 @@ const orderDetails = async (req) => {
     })
 }
 
-module.exports = {createOrder, orderDetails}
+const getOrdersByDate = async (req) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            if (!req.user) {
+                reject({
+                    success: false,
+                    message: "Please login to see your orders.",
+                    data: null
+                })
+            }
+            let orderDetails = await orderRepo.findOrdersFromSpecificPeriod(req.body.fromDate, req.body.toDate);
+            return resolve(orderDetails);
+        } catch (error) {
+            console.log(error)
+            reject({
+                success: false,
+                message: error.message,
+                data: null
+            })
+        }
+    })
+}
+
+module.exports = {createOrder, getOrderDetails, getOrdersByDate}

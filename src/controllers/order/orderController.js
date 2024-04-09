@@ -36,4 +36,22 @@ const getOrderDetails = async (req, res) => {
     }
 }
 
-module.exports = {createOrder, getOrderDetails}
+const getOrdersByDate = async (req, res) => {
+    try {
+        let order = await orderService.getOrdersByDate(req);
+        res.status(200).json({
+            success: true,
+            message: "order fetched successfully",
+            data: order
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            data: null
+        });
+    }
+}
+
+module.exports = {createOrder, getOrderDetails, getOrdersByDate}
