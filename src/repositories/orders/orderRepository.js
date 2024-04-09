@@ -9,7 +9,7 @@ module.exports = {
         return (await Order.findOne({_id: orderId})).populate('orderItems');
     },
     findOrdersFromSpecificPeriod: async (fromDate, toDate) => {
-        return await Order.find({
+         return await Order.find({
             createdAt: {
                 $gte: new Date(fromDate),
                 $lt: new Date(toDate)
