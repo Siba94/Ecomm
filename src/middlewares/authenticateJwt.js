@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-function authenticateToken (req, res, next) {
+const authenticateToken = (req, res, next) => {
     // get the token from request header.
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -15,14 +15,34 @@ function authenticateToken (req, res, next) {
     // verify the provided token
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
 
-        if (err) return res.status(403).json({
-            success: false,
-            message: err.message,
-            data: null
-        });
+        if (err) {
+            return res.status(403).json({
+                success: false,
+                message: err.message,
+                data: null
+            });
+        }
         req.user = user;
         next();
     })
 }
 
-module.exports.authenticateToken = authenticateToken;
+const isUserAuthorized = (roles) => {
+    return (req, res, next) => {
+        if (!Array.isArray(roles)) {
+            roles = [roles];
+        }
+        console.log(roles, req.user, req.user.role);
+        if (roles.indexOf(req.user.role) === -1) {
+            return res.status(401).json({
+                success: false,
+                message: "You are not allowed for the requested operation.",
+                data: null
+            });
+        }
+        next();
+    }
+}
+
+
+module.exports = {authenticateToken, isUserAuthorized}

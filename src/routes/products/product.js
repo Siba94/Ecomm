@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const { reqValidate } = require ('../../middlewares/requestValidation');
-const { authenticateToken } = require('../../middlewares/authenticateJwt');
+const { authenticateToken, isUserAuthorized} = require('../../middlewares/authenticateJwt');
 const { createProduct,listAllProducts, productDetails, productBasedOnCategory } = require('../../controllers/products/productController');
+const {ROLES_ALLOWED} = require('../../config/constant')
 
 router.post('/category/:categoryId/product', 
     [
@@ -14,6 +15,7 @@ router.post('/category/:categoryId/product',
         body('price'),
     ],
     authenticateToken,
+    isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
     createProduct
 );

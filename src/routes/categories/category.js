@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const { reqValidate } = require('../../middlewares/requestValidation');
-const { authenticateToken } = require('../../middlewares/authenticateJwt');
+const { authenticateToken, isUserAuthorized } = require('../../middlewares/authenticateJwt');
 const { createCategory, updateCategory, activateCategory, deActivateCategory, getAllCategories } = require('../../controllers/categories/categoryController');
+const {ROLES_ALLOWED} = require('../../config/constant')
 
 router.post('/category', 
     [
@@ -16,6 +17,7 @@ router.post('/category',
         body('description'),
     ],
     authenticateToken,
+    isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
     createCategory
 );
@@ -31,6 +33,7 @@ router.patch('/category/:categoryId',
         body('description'),
     ],
     authenticateToken,
+    isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
     updateCategory
 )
@@ -38,6 +41,7 @@ router.patch('/category/:categoryId',
 router.patch('/category/:categoryId/activate', 
     [],
     authenticateToken,
+    isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
     activateCategory
 )
@@ -45,6 +49,7 @@ router.patch('/category/:categoryId/activate',
 router.patch('/category/:categoryId/de-activate', 
     [],
     authenticateToken,
+    isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
     deActivateCategory
 )

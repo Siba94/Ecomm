@@ -1,5 +1,6 @@
 const userRegistrationService = require('../../services/auth/userRegistrationService');
 const jwt = require('jsonwebtoken');
+const {JWT_EXPIRE_TIME} = require('../../config/constant')
 
 const registerUser = async (req, res) => {
     try {
@@ -8,7 +9,12 @@ const registerUser = async (req, res) => {
         res.status(201).json({
             success: true,
             message: "User created successfully ",
-            data: generateJwtToken({username: user.name, email: user.email, id: user._id})
+            data: generateJwtToken({
+                id: user._id,
+                username: user.name, 
+                email: user.email, 
+                role: user.role
+            })
         })
     } catch (error) {
         res.status(500).json({
@@ -20,7 +26,7 @@ const registerUser = async (req, res) => {
 }
 
 function generateJwtToken (username) {
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '24h'})
+    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRE_TIME})
 }
 
 module.exports = { registerUser }

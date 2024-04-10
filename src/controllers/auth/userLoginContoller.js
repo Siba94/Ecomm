@@ -1,5 +1,6 @@
 const userLoginService = require('../../services/auth/userLoginService');
 const jwt = require('jsonwebtoken');
+const {JWT_EXPIRE_TIME} = require('../../config/constant')
 
 const login = async (req, res) => {
     try {
@@ -8,7 +9,12 @@ const login = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "successfully loggedIn",
-            data: generateJwtToken({username: user.name, email:user.email, id: user._id})
+            data: generateJwtToken({
+                id: user._id,
+                username: user.name, 
+                email: user.email, 
+                role: user.role
+            })
         })
     } catch (error) {
         res.status(500).json({
@@ -20,7 +26,7 @@ const login = async (req, res) => {
 }
 
 function generateJwtToken (username) {
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '24h'})
+    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRE_TIME})
 }
 
 module.exports = { login }
