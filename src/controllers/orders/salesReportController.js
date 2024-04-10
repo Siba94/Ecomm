@@ -18,6 +18,7 @@ const generateSalesReport = async (req, res) => {
             {header: "Total Quantity", key: 'totalQuantity'},
             {header: "Total Price", key: 'totalPrice'},
         ];
+        // add order data to excel
         orderDetails.forEach(order => {
             let orderedItems = order.orderItems;
             orderedItems.forEach(orderedItem => {
@@ -37,7 +38,7 @@ const generateSalesReport = async (req, res) => {
         
         let excelBuffer = await workbook.xlsx.writeBuffer();
 
-        // set response header and download it
+        // set response header for download it
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=sales_report.xlsx');
         res.send(excelBuffer);

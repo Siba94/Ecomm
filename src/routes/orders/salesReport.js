@@ -7,7 +7,7 @@ const { generateSalesReport } = require('../../controllers/orders/salesReportCon
 
 router.get('/sales-report', 
     [],
-    // authenticateToken,
+    authenticateToken,
     reqValidate,
     generateSalesReport
 )
