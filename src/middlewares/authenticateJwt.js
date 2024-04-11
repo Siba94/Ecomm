@@ -32,7 +32,7 @@ const isUserAuthorized = (roles) => {
         if (!Array.isArray(roles)) {
             roles = [roles];
         }
-        console.log(roles, req.user, req.user.role);
+    
         if (roles.indexOf(req.user.role) === -1) {
             return res.status(401).json({
                 success: false,

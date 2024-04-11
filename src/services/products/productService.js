@@ -7,12 +7,13 @@ const createProduct = async(req) => {
         try {
             // check the category details before creating product.
             let category = await categoryRepo.findById(req.params.categoryId);
-            if (isEmpty(category)) {
+            if (!category) {
                 reject({
                     success: false,
                     message: 'The provided category is not available to create product.'
                 })
             }
+            console.log(category);
             // create the product.
             let createdProduct = await productRepo.create({
                 name: req.body.name,
@@ -70,7 +71,7 @@ const productDetails = async(req) => {
             // get product details based on prodcut id.
             let product = await productRepo.findOneBy(req.params.productId);
 
-            if (isEmpty(product)) {
+            if (!product) {
                 reject({
                     success: false,
                     message: "Products are not available. Please create a product.",
