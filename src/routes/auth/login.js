@@ -4,7 +4,7 @@ const { body } = require('express-validator');
 const { reqValidate } = require('../../middlewares/requestValidation.js')
 const { login } = require('../../controllers/auth/userLoginContoller.js');
 
-router.post('/login', 
+router.post('/login',
     [
         body('email')
             .notEmpty()

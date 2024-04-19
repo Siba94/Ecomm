@@ -1,32 +1,33 @@
 const userLoginService = require('../../services/auth/userLoginService');
-const jwt = require('jsonwebtoken');
-const {JWT_EXPIRE_TIME} = require('../../config/constant')
+const { success } = require("../../utils/success");
+const { apiResponse } = require("../../utils/apiResponse");
 
 const login = async (req, res) => {
+
     try {
         // try for the user login service.
-        let user = await userLoginService.userLogin(req);
-        res.status(200).json({
-            success: true,
-            message: "successfully loggedIn",
-            data: generateJwtToken({
-                id: user._id,
-                username: user.name, 
-                email: user.email, 
-                role: user.role
-            })
-        })
+        let userToken = await userLoginService
+            .userLogin(
+                req.body.email, 
+                req.body.password
+            );
+        res.status(success.USER_LOGGEDIN.status)
+            .json(
+                apiResponse(
+                    true,
+                    success.USER_LOGGEDIN.message,
+                    userToken
+                )
+            )
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-            data: null
-        })
+        res.status(error.status)
+            .json(
+                apiResponse(
+                    false,
+                    error.message
+                )
+            )
     }
-}
-
-function generateJwtToken (username) {
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRE_TIME})
 }
 
 module.exports = { login }

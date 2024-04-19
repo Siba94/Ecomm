@@ -1,6 +1,6 @@
 const userRegistrationService = require('../../services/auth/userRegistrationService');
 const jwt = require('jsonwebtoken');
-const {JWT_EXPIRE_TIME} = require('../../config/constant')
+const {JWT_EXPIRE_TIME} = require('../../constants/constant')
 
 const registerUser = async (req, res) => {
     try {

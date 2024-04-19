@@ -1,40 +1,48 @@
-const { User } = require('../../models/user');
+const userRepo = require('../../repositories/users/userRepository');
+const { error } = require("../../utils/error");
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const userLogin = async (req) => {
-    return new Promise (async (resolve, reject) => {
-        try {
-            // get the user details from db.
-            let user = await User.findOne({ email: req.body.email });
-            // reject if user not found.
-            if (!user) {
-                reject({
-                    success: false,
-                    message: "user not available with the requested email address.",
-                    data: null
+/**
+ * this helps us for user login
+ * @param {*} email 
+ * @param {*} password 
+ * @returns {string | object}
+ */
+const userLogin = async (email, password) => {
+    try {
+        let user = await userRepo.findByEmail(email);
+        if (user) {
+            let isValidPassword = bcrypt.compareSync(password, user.password);
+            if (isValidPassword) {
+                let jwtToken = generateJwtToken({
+                    id: user._id,
+                    username: user.name, 
+                    email: user.email, 
+                    role: user.role
                 })
-            } else {
-                // validate the password.
-                let isValidPassword = bcrypt.compareSync(req.body.password, user.password)
-                if (!isValidPassword) {
-                    reject({
-                        success: false,
-                        message: 'Invalid password. Please retry!!',
-                        data: null
-                    })
-                }
-                // resolve successfully if all well.
-                return resolve(user);
+                return jwtToken;
             }
-        } catch (error) {
-            console.log(error)
-            reject({
-                success: false,
-                message: error.message,
-                data: null
-            })
+            throw { 
+                status: error.INVALID_PASSWORD.status,
+                message: error.INVALID_PASSWORD.message
+            }
         }
-    })
+        throw {
+            status: error.USER_NOT_FOUND.status,
+            message: error.USER_NOT_FOUND.message
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function generateJwtToken (username) {
+    try {
+        return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: "24h"})
+    } catch (error) {
+        throw error;
+    }
 }
 
 module.exports = { userLogin }

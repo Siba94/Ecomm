@@ -4,7 +4,7 @@ const { body } = require('express-validator');
 const { reqValidate } = require ('../../middlewares/requestValidation');
 const { authenticateToken, isUserAuthorized} = require('../../middlewares/authenticateJwt');
 const { createProduct,listAllProducts, productDetails, productBasedOnCategory } = require('../../controllers/products/productController');
-const {ROLES_ALLOWED} = require('../../config/constant')
+const {ROLES_ALLOWED} = require('../../constants/constant')
 
 router.post('/category/:categoryId/product', 
     [

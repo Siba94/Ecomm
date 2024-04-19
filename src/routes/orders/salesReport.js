@@ -4,10 +4,9 @@ const { body } = require('express-validator');
 const { reqValidate } = require ('../../middlewares/requestValidation');
 const { authenticateToken, isUserAuthorized } = require('../../middlewares/authenticateJwt');
 const { generateSalesReport } = require('../../controllers/orders/salesReportController');
-const {ROLES_ALLOWED} = require('../../config/constant')
+const {ROLES_ALLOWED} = require('../../constants/constant')
 
-router.get('/sales-report', 
-    [],
+router.get('/sales-report',
     authenticateToken,
     isUserAuthorized(ROLES_ALLOWED.ADMIN),
     reqValidate,
